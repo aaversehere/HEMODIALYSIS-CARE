@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#21b99a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="HD Care" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Masuk - Hemodialysis Care</title>
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('hdc_theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      } catch (error) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css?v=20260611-1" />
+</head>
+<body class="auth-page">
+  <main class="auth-shell" aria-label="Autentikasi Hemodialysis Care">
+    <section class="auth-panel">
+      <div class="auth-brand">
+        <div class="brand-mark" aria-hidden="true">
+          <img src="assets/images/Hemodialysis-Care jadi.png" alt="" />
+        </div>
+        <div>
+          <strong>Hemodialysis Care</strong>
+        </div>
+      </div>
+
+      <div class="auth-tabs" role="tablist" aria-label="Pilih mode autentikasi">
+        <button class="active" type="button" id="loginTab">Masuk</button>
+        <button type="button" id="registerTab">Daftar</button>
+      </div>
+
+      <form class="auth-form active" id="loginForm">
+        <div class="auth-heading">
+          <h1>Masuk akun</h1>
+        </div>
+
+        <label class="auth-field">
+          <span>Email</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M20 21a8 8 0 0 0-16 0" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </span>
+            <input type="email" id="loginEmail" autocomplete="email" placeholder="Masukkan email" required />
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span>Password</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                <path d="M12 15v2" />
+              </svg>
+            </span>
+            <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Masukkan password" required />
+          </div>
+        </label>
+
+        <p class="auth-message" id="loginMessage" aria-live="polite"></p>
+        <button class="primary-button" type="submit">Masuk ke Beranda</button>
+        <button class="secondary-button auth-continue" type="button" id="continueSession" hidden>
+          Lanjutkan session aktif
+        </button>
+
+        <div class="auth-links">
+          <p>Belum punya akun? <button class="link-button" type="button" id="switchToRegister">Daftar sekarang</button></p>
+          <p>Lupa password? <button class="link-button" type="button" id="forgotPassword">Reset di sini</button></p>
+        </div>
+      </form>
+
+      <form class="auth-form" id="registerForm">
+        <div class="auth-heading">
+          <h1>Buat akun</h1>
+        </div>
+
+        <label class="auth-field">
+          <span>Nama lengkap</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M20 21a8 8 0 0 0-16 0" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </span>
+            <input type="text" id="registerName" autocomplete="name" placeholder="Nama pasien" required />
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span>Email</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M4 6h16v12H4z" />
+                <path d="m4 7 8 6 8-6" />
+              </svg>
+            </span>
+            <input type="email" id="registerEmail" autocomplete="email" placeholder="Masukan email" required />
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span>Jenis kelamin</span>
+          <input type="hidden" id="registerGender" value="" />
+          <div class="gender-options" role="radiogroup" aria-label="Jenis kelamin">
+            <button type="button" class="gender-option" data-gender="male" aria-pressed="false">
+              <span class="gender-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <circle cx="10" cy="14" r="5" />
+                  <path d="M14 10l6-6" />
+                  <path d="M15 4h5v5" />
+                </svg>
+              </span>
+              <span>
+                <strong>Pria</strong>
+                <small>Pasien laki-laki</small>
+              </span>
+            </button>
+            <button type="button" class="gender-option" data-gender="female" aria-pressed="false">
+              <span class="gender-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <circle cx="12" cy="9" r="5" />
+                  <path d="M12 14v7" />
+                  <path d="M9 18h6" />
+                </svg>
+              </span>
+              <span>
+                <strong>Wanita</strong>
+                <small>Pasien perempuan</small>
+              </span>
+            </button>
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span>Password</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                <path d="M12 15v2" />
+              </svg>
+            </span>
+            <input type="password" id="registerPassword" autocomplete="new-password" placeholder="Minimal 6 karakter" required />
+          </div>
+        </label>
+
+        <label class="auth-field">
+          <span>Konfirmasi password</span>
+          <div class="input-shell">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </span>
+            <input type="password" id="confirmPassword" autocomplete="new-password" placeholder="Ulangi password" required />
+          </div>
+        </label>
+
+        <p class="auth-message" id="registerMessage" aria-live="polite"></p>
+        <button class="primary-button" type="submit">Daftar</button>
+        <div class="auth-links">
+          <p>Sudah punya akun? <button class="link-button" type="button" id="switchToLogin">Masuk sekarang</button></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260611-1"></script>
+  <script src="supabase-client.js?v=20260611-1"></script>
+  <script src="pwa-register.js?v=20260611-1"></script>
+  <script src="auth.js?v=20260611-1"></script>
+</body>
+</html>

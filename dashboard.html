@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#21b99a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="HD Care" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Hemodialysis Care</title>
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('hdc_theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      } catch (error) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css?v=20260611-1" />
+</head>
+<body>
+  <main class="app-shell" aria-label="Aplikasi Hemodialysis Care">
+    <section class="screen">
+      <div class="page active" id="page-beranda">
+        <header class="top-header">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+              <img src="assets/images/Hemodialysis-Care jadi.png" alt="" />
+            </div>
+            <div>
+              <strong>Hemodialysis</strong>
+              <span>Care</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="page-scroll">
+          <section class="hero-card">
+            <img src="assets/images/user_avatar.png" alt="Foto profil pengguna" class="avatar" data-user-avatar />
+            <div>
+              <h1>Halo, <span data-user-name>Andi</span></h1>
+              <p>Tetap semangat jalani hemodialisis hari ini.</p>
+            </div>
+          </section>
+
+          <section class="schedule-card">
+            <div class="section-heading">
+              <h2>Jadwal Hemodialisis Berikutnya</h2>
+            </div>
+            <div class="schedule-content" id="nextSchedule">
+              <p class="empty-state">Belum ada jadwal. Tambahkan jadwal dari menu Jadwal.</p>
+            </div>
+          </section>
+
+          <div class="section-heading with-action">
+            <h2>Ringkasan Hari Ini</h2>
+            <button class="text-button" type="button">Lihat Semua</button>
+          </div>
+
+          <section class="summary-grid" aria-label="Ringkasan kesehatan">
+            <article class="summary-card">
+              <div class="card-top">
+                <span>Berat Badan</span>
+                <span class="status-icon green">&searr;</span>
+              </div>
+              <label class="summary-input">
+                <input type="number" inputmode="decimal" step="0.1" min="0" data-summary-field="weight" placeholder="Isi berat" />
+                <small>kg</small>
+              </label>
+              <p data-summary-text="weight">Belum ada data berat badan.</p>
+            </article>
+            <article class="summary-card">
+              <div class="card-top">
+                <span>Tekanan Darah</span>
+                <span class="status-icon red">&hearts;</span>
+              </div>
+              <div class="summary-input split">
+                <input type="number" inputmode="numeric" min="0" data-summary-field="systolic" placeholder="Sistolik" />
+                <span>/</span>
+                <input type="number" inputmode="numeric" min="0" data-summary-field="diastolic" placeholder="Diastolik" />
+                <small>mmHg</small>
+              </div>
+              <p data-summary-text="bloodPressure">Belum ada data tekanan darah.</p>
+            </article>
+            <article class="summary-card">
+              <div class="card-top">
+                <span>Cairan</span>
+                <span class="status-icon blue">&#9679;</span>
+              </div>
+              <label class="summary-input">
+                <input type="number" inputmode="numeric" min="0" data-summary-field="fluid" placeholder="Isi cairan" />
+                <small>ml</small>
+              </label>
+              <p data-summary-text="fluid">Belum ada data cairan.</p>
+              <div class="progress"><span data-summary-progress="fluid"></span></div>
+            </article>
+            <article class="summary-card">
+              <div class="card-top">
+                <span>Obat</span>
+                <span class="status-icon purple">+</span>
+              </div>
+              <label class="summary-input">
+                <input type="number" inputmode="numeric" min="0" data-summary-field="medicine" placeholder="Jumlah obat" />
+                <small>obat</small>
+              </label>
+              <p data-summary-text="medicine">Belum ada data obat.</p>
+            </article>
+          </section>
+
+          <div class="section-heading with-action">
+            <h2>Edukasi Untuk Anda</h2>
+            <button class="text-button" type="button" data-page-target="edukasi">Lihat Semua</button>
+          </div>
+
+          <button class="education-preview" type="button" data-page-target="edukasi">
+            <img src="assets/images/healthy_food.png" alt="Makanan sehat pasien ginjal" />
+            <span>
+              <strong>Makanan yang baik untuk pasien ginjal</strong>
+              <small>Pelajari makanan yang aman dan menyehatkan untuk pasien hemodialisis.</small>
+            </span>
+            <span class="chevron" aria-hidden="true">&rsaquo;</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="page" id="page-jadwal">
+        <header class="top-header">
+          <h1 class="page-title">Jadwal</h1>
+        </header>
+
+        <div class="page-scroll">
+          <section class="calendar-card">
+            <div class="calendar-header">
+              <button class="small-button" type="button" aria-label="Bulan sebelumnya">&lsaquo;</button>
+              <strong>Mei 2024</strong>
+              <button class="small-button" type="button" aria-label="Bulan berikutnya">&rsaquo;</button>
+            </div>
+            <div class="calendar-weekdays">
+              <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+            </div>
+            <div class="calendar-grid" id="calGrid"></div>
+          </section>
+
+          <div class="section-heading with-action">
+            <h2>Jadwal Mendatang</h2>
+            <button class="text-button" type="button" id="addScheduleButton">Tambah +</button>
+          </div>
+
+          <section class="schedule-list" id="scheduleList" aria-label="Daftar jadwal">
+            <p class="empty-state">Belum ada jadwal.</p>
+          </section>
+        </div>
+      </div>
+
+      <div class="page" id="page-keluhan">
+        <header class="top-header">
+          <h1 class="page-title">Keluhan</h1>
+          <button class="icon-button" type="button" id="addNoteHeader" aria-label="Tambah keluhan">
+            <span class="icon-plus" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <div class="page-scroll">
+          <label class="search-box">
+            <span class="icon-search" aria-hidden="true"></span>
+            <input type="search" id="catatanSearch" placeholder="Cari keluhan..." />
+          </label>
+
+          <section class="note-list" id="catatanList" aria-label="Daftar keluhan">
+            <article class="note-card green">
+              <div class="note-top">
+                <span>16 Mei 2024</span>
+                <button type="button" class="delete-note" aria-label="Hapus keluhan">&times;</button>
+              </div>
+              <h3>Pusing Setelah Dialisis</h3>
+              <p>Merasa pusing ringan setelah sesi dialisis. Sudah istirahat dan memantau tekanan darah.</p>
+              <div class="tags"><span>Pusing</span><span>Dialisis</span></div>
+            </article>
+            <article class="note-card blue">
+              <div class="note-top">
+                <span>14 Mei 2024</span>
+                <button type="button" class="delete-note" aria-label="Hapus keluhan">&times;</button>
+              </div>
+              <h3>Kram Kaki</h3>
+              <p>Kaki terasa kram pada malam hari. Keluhan dicatat untuk ditanyakan saat kontrol berikutnya.</p>
+              <div class="tags"><span>Kram</span><span>Kaki</span></div>
+            </article>
+            <article class="note-card purple">
+              <div class="note-top">
+                <span>12 Mei 2024</span>
+                <button type="button" class="delete-note" aria-label="Hapus keluhan">&times;</button>
+              </div>
+              <h3>Mual Ringan</h3>
+              <p>Mual ringan muncul setelah makan. Dicatat bersama waktu kejadian agar mudah dipantau.</p>
+              <div class="tags"><span>Mual</span></div>
+            </article>
+          </section>
+
+          <button class="fab-button" type="button" id="addNoteFab" aria-label="Tambah keluhan">
+            <span class="icon-plus" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="page" id="page-edukasi">
+        <header class="top-header">
+          <h1 class="page-title">Edukasi</h1>
+        </header>
+
+        <div class="page-scroll">
+          <label class="search-box">
+            <span class="icon-search" aria-hidden="true"></span>
+            <input type="search" placeholder="Cari artikel..." />
+          </label>
+
+          <div class="category-tabs" aria-label="Kategori artikel">
+            <button class="active" type="button" data-education-filter="Semua">Semua</button>
+            <button type="button" data-education-filter="Diet">Diet</button>
+            <button type="button" data-education-filter="Olahraga">Olahraga</button>
+            <button type="button" data-education-filter="Obat">Obat</button>
+            <button type="button" data-education-filter="Video">Video Edukasi</button>
+          </div>
+
+          <div id="educationContent">
+          <article class="featured-article" id="featuredEducation">
+            <div class="featured-combo" id="featuredEducationCombo" aria-hidden="true">
+              <img src="assets/images/healthy_food.png" alt="" />
+              <img src="assets/images/exercise_care.png" alt="" />
+              <img src="assets/images/medicine_care.png" alt="" />
+            </div>
+            <img src="assets/images/healthy_food.png" alt="Makanan sehat" id="featuredEducationImage" />
+            <div>
+              <span id="featuredEducationCategory">Diet</span>
+              <h2 id="featuredEducationTitle">Makanan yang baik untuk pasien ginjal</h2>
+              <p id="featuredEducationText">Pelajari makanan yang aman dan menyehatkan untuk pasien hemodialisis.</p>
+            </div>
+          </article>
+
+          <h2 class="list-title" id="articleListTitle">Artikel Terbaru</h2>
+          <section class="article-list" id="articleList" aria-label="Artikel terbaru">
+            <button class="article-item" type="button" data-category="Diet" data-article-title="Pentingnya Kontrol Cairan Saat Dialisis" data-article-src="assets/pdf/Diet.pdf">
+              <span class="article-icon green">D</span>
+              <span><strong>Pentingnya Kontrol Cairan Saat Dialisis</strong><small>5 menit baca &middot; Diet</small></span>
+              <span class="chevron">&rsaquo;</span>
+            </button>
+            <button class="article-item" type="button" data-category="Olahraga" data-article-title="Olahraga Ringan untuk Pasien Ginjal" data-article-src="assets/pdf/Olahraga.pdf">
+              <span class="article-icon purple">O</span>
+              <span><strong>Olahraga Ringan untuk Pasien Ginjal</strong><small>7 menit baca &middot; Olahraga</small></span>
+              <span class="chevron">&rsaquo;</span>
+            </button>
+            <button class="article-item" type="button" data-category="Obat" data-article-title="Cara Minum Obat yang Benar" data-article-src="assets/pdf/Obat.pdf">
+              <span class="article-icon amber">Rx</span>
+              <span><strong>Cara Minum Obat yang Benar</strong><small>4 menit baca &middot; Obat</small></span>
+              <span class="chevron">&rsaquo;</span>
+            </button>
+            <button class="article-item" type="button" data-category="Psikologi">
+              <span class="article-icon red">M</span>
+              <span><strong>Menjaga Kesehatan Mental Pasien Dialisis</strong><small>6 menit baca &middot; Psikologi</small></span>
+              <span class="chevron">&rsaquo;</span>
+            </button>
+          </section>
+          </div>
+
+          <section class="video-page" id="videoEducationPage" aria-label="Video edukasi" hidden>
+            <div class="section-heading video-heading">
+              <h2>Video Edukasi</h2>
+            </div>
+
+            <div class="video-list" id="videoList">
+            <article class="video-card" data-category="Diet">
+              <div class="video-frame" style="--video-poster: url('assets/images/healthy_food.png')">
+                <video preload="metadata" poster="assets/images/healthy_food.png">
+                  <source src="https://vntrcglwdzokwcevsteb.supabase.co/storage/v1/object/public/education-videos/Tips%20Diet%20pada%20Penderita%20Gagal%20Ginjal%20-%20dr.%20Kristin%20Mekararti,%20Sp.GK%20-%20RS%20Hermina%20Grandwisata.mp4" type="video/mp4" />
+                  Browser Anda tidak mendukung pemutar video.
+                </video>
+                <button class="play-button" type="button">PLAY</button>
+              </div>
+              <div class="video-body">
+                <h3>Video panduan diet pasien ginjal</h3>
+                <p>Kategori: Diet.</p>
+                <div class="video-badges">
+                  <span class="watch-status">Belum ditonton</span>
+                  <span class="favorite-status">Belum favorite</span>
+                </div>
+                <div class="video-actions">
+                  <button type="button" data-video-action="watched">Tandai ditonton</button>
+                  <button type="button" data-video-action="favorite">Favorite</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="video-card" data-category="Olahraga">
+              <div class="video-frame" style="--video-poster: url('assets/images/exercise_care.png')">
+                <video preload="metadata" poster="assets/images/exercise_care.png">
+                  <source src="https://vntrcglwdzokwcevsteb.supabase.co/storage/v1/object/public/education-videos/Do%20this%2010%20Min%20Morning%20Workout%20Routine%20Everyday%20-%20No%20Jumping,%20No%20Repeat.mp4" type="video/mp4" />
+                  Browser Anda tidak mendukung pemutar video.
+                </video>
+                <button class="play-button" type="button">PLAY</button>
+              </div>
+              <div class="video-body">
+                <h3>Video olahraga ringan</h3>
+                <p>Kategori: Olahraga.</p>
+                <div class="video-badges">
+                  <span class="watch-status">Belum ditonton</span>
+                  <span class="favorite-status">Belum favorite</span>
+                </div>
+                <div class="video-actions">
+                  <button type="button" data-video-action="watched">Tandai ditonton</button>
+                  <button type="button" data-video-action="favorite">Favorite</button>
+                </div>
+              </div>
+            </article>
+
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="page" id="page-profil">
+        <header class="top-header">
+          <h1 class="page-title">Profil</h1>
+          <button class="icon-button" type="button" id="editProfileButton" aria-label="Edit profil">
+            <span class="icon-edit" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <div class="page-scroll">
+          <section class="profile-hero">
+            <img src="assets/images/user_avatar.png" alt="Foto profil pengguna" data-user-avatar />
+            <h2 data-profile-name></h2>
+            <p>ID Pasien: <span data-profile-id></span></p>
+            <div><span>Hemodialisis</span><span>Aktif</span></div>
+          </section>
+
+          <section class="profile-stats" aria-label="Statistik pasien">
+            <div><strong data-total-sessions>0</strong><span>Sesi Total</span></div>
+            <div><strong data-active-months>0</strong><span>Bulan Aktif</span></div>
+            <div><strong data-adherence>-</strong><span>Kepatuhan</span></div>
+          </section>
+
+          <button class="profile-edit-bar" type="button" id="completeProfileButton">
+            <span>Lengkapi Data Pribadi</span>
+            <span class="chevron" aria-hidden="true">&rsaquo;</span>
+          </button>
+
+          <section class="profile-section">
+            <h2>Informasi Pribadi</h2>
+            <div class="info-card">
+              <div><span>Tanggal Lahir</span><strong data-profile-birth></strong></div>
+              <div><span>No. Telepon</span><strong data-profile-phone></strong></div>
+              <div><span>Alamat</span><strong data-profile-address></strong></div>
+              <div><span>Email</span><strong data-profile-email></strong></div>
+            </div>
+          </section>
+
+          <section class="menu-list" aria-label="Menu profil">
+            <button type="button" class="danger" id="logoutButton"><span>Keluar</span><span class="chevron">&rsaquo;</span></button>
+          </section>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="Navigasi utama">
+        <button class="nav-item active" type="button" id="nav-beranda" data-page-target="beranda">
+          <span class="icon-home" aria-hidden="true"></span>
+          <span>Beranda</span>
+        </button>
+        <button class="nav-item" type="button" id="nav-jadwal" data-page-target="jadwal">
+          <span class="icon-calendar" aria-hidden="true"></span>
+          <span>Jadwal</span>
+        </button>
+        <button class="nav-item" type="button" id="nav-keluhan" data-page-target="keluhan">
+          <span class="icon-note" aria-hidden="true"></span>
+          <span>Keluhan</span>
+        </button>
+        <button class="nav-item" type="button" id="nav-edukasi" data-page-target="edukasi">
+          <span class="icon-book" aria-hidden="true"></span>
+          <span>Edukasi</span>
+        </button>
+        <button class="nav-item" type="button" id="nav-profil" data-page-target="profil">
+          <span class="icon-user" aria-hidden="true"></span>
+          <span>Profil</span>
+        </button>
+      </nav>
+
+      <nav class="bottom-nav" aria-label="Navigasi utama mobile">
+        <button class="bottom-item active" type="button" data-page-target="beranda">
+          <span class="icon-home" aria-hidden="true"></span>
+          <strong>Beranda</strong>
+        </button>
+        <button class="bottom-item" type="button" data-page-target="jadwal">
+          <span class="icon-calendar" aria-hidden="true"></span>
+          <strong>Jadwal</strong>
+        </button>
+        <button class="bottom-item" type="button" data-page-target="keluhan">
+          <span class="icon-note" aria-hidden="true"></span>
+          <strong>Keluhan</strong>
+        </button>
+        <button class="bottom-item" type="button" data-page-target="edukasi">
+          <span class="icon-book" aria-hidden="true"></span>
+          <strong>Edukasi</strong>
+        </button>
+        <button class="bottom-item" type="button" data-page-target="profil">
+          <span class="icon-user" aria-hidden="true"></span>
+          <strong>Profil</strong>
+        </button>
+      </nav>
+
+      <section class="chatbot-panel" id="chatbotPanel" aria-label="Chatbot Hemodialysis Care" aria-hidden="true">
+        <header class="chatbot-header">
+          <div>
+            <strong>Asisten Care</strong>
+            <span>Siap membantu pemantauan harian</span>
+          </div>
+          <button class="chatbot-close" type="button" id="closeChatbot" aria-label="Tutup chatbot">&times;</button>
+        </header>
+
+        <div class="chatbot-messages" id="chatbotMessages" aria-live="polite"></div>
+
+        <form class="chatbot-form" id="chatbotForm">
+          <input type="text" id="chatbotInput" placeholder="Tanyakan jadwal, cairan, obat..." autocomplete="off" />
+          <button type="submit" aria-label="Kirim pesan">
+            <span aria-hidden="true">Kirim</span>
+          </button>
+        </form>
+      </section>
+
+      <button class="chatbot-toggle" type="button" id="openChatbot" aria-label="Buka chatbot">
+        <span aria-hidden="true">Chat</span>
+      </button>
+
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Aktifkan mode malam">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span class="theme-toggle-text">Malam</span>
+      </button>
+
+      <dialog class="app-dialog" id="scheduleDialog" aria-labelledby="scheduleDialogTitle">
+        <form class="dialog-panel" id="scheduleForm">
+          <div class="dialog-header">
+            <div>
+              <h2 id="scheduleDialogTitle">Tambah Jadwal</h2>
+              <p>Isi detail jadwal hemodialisis Anda.</p>
+            </div>
+            <button class="dialog-close" type="button" data-close-schedule aria-label="Tutup">&times;</button>
+          </div>
+
+          <label class="form-field">
+            <span>Tanggal</span>
+            <input type="date" id="scheduleDate" required />
+          </label>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Jam Mulai</span>
+              <input type="time" id="scheduleStart" required />
+            </label>
+            <label class="form-field">
+              <span>Jam Selesai</span>
+              <input type="time" id="scheduleEnd" required />
+            </label>
+          </div>
+
+          <label class="form-field">
+            <span>Lokasi / Klinik</span>
+            <input type="text" id="schedulePlace" placeholder="Contoh: Klinik Ginjal Sehat" required />
+          </label>
+
+          <label class="form-field">
+            <span>Nama Jadwal</span>
+            <input type="text" id="scheduleTitle" placeholder="Hemodialisis" />
+          </label>
+
+          <div class="dialog-actions">
+            <button class="secondary-button" type="button" data-close-schedule>Batal</button>
+            <button class="primary-button compact" type="submit">Simpan Jadwal</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog class="video-dialog" id="videoDialog" aria-labelledby="videoDialogTitle">
+        <div class="video-dialog-panel">
+          <header class="video-dialog-header">
+            <h2 id="videoDialogTitle">Video Edukasi</h2>
+            <button class="dialog-close" type="button" id="closeVideoDialog" aria-label="Tutup video">&times;</button>
+          </header>
+          <video class="video-dialog-player" id="videoDialogPlayer" controls playsinline></video>
+        </div>
+      </dialog>
+
+      <dialog class="article-dialog" id="articleDialog" aria-labelledby="articleDialogTitle">
+        <div class="article-dialog-panel">
+          <header class="article-dialog-header">
+            <h2 id="articleDialogTitle">Artikel Edukasi</h2>
+            <button class="dialog-close" type="button" id="closeArticleDialog" aria-label="Tutup artikel">&times;</button>
+          </header>
+          <iframe class="article-viewer" id="articleViewer" title="Pembaca artikel edukasi"></iframe>
+        </div>
+      </dialog>
+
+      <dialog class="profile-dialog" id="profileDialog" aria-labelledby="profileDialogTitle">
+        <form class="dialog-panel" id="profileForm">
+          <div class="dialog-header">
+            <div>
+              <h2 id="profileDialogTitle">Data Pribadi</h2>
+              <p>Lengkapi data yang ingin ditampilkan pada profil Anda.</p>
+            </div>
+            <button class="dialog-close" type="button" data-close-profile aria-label="Tutup">&times;</button>
+          </div>
+
+          <label class="form-field">
+            <span>Tanggal Lahir</span>
+            <input type="date" id="profileBirthDate" />
+          </label>
+
+          <label class="form-field">
+            <span>No. Telepon</span>
+            <input type="tel" id="profilePhone" placeholder="Contoh: +62 812 3456 7890" />
+          </label>
+
+          <label class="form-field">
+            <span>Alamat</span>
+            <input type="text" id="profileAddress" placeholder="Masukkan alamat" />
+          </label>
+
+          <div class="dialog-actions">
+            <button class="secondary-button" type="button" data-close-profile>Batal</button>
+            <button class="primary-button compact" type="submit">Simpan Data</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog class="complaint-dialog" id="complaintDialog" aria-labelledby="complaintDialogTitle">
+        <form class="dialog-panel" id="complaintForm">
+          <div class="dialog-header">
+            <div>
+              <h2 id="complaintDialogTitle">Tambah Keluhan</h2>
+              <p>Catat keluhan yang dirasakan agar mudah dipantau kembali.</p>
+            </div>
+            <button class="dialog-close" type="button" data-close-complaint aria-label="Tutup">&times;</button>
+          </div>
+
+          <label class="form-field">
+            <span>Jenis Keluhan</span>
+            <input type="text" id="complaintTitle" placeholder="Contoh: Pusing, mual, kram" required />
+          </label>
+
+          <label class="form-field">
+            <span>Detail Keluhan</span>
+            <textarea id="complaintBody" placeholder="Tuliskan waktu kejadian, kondisi tubuh, dan hal yang dirasakan." required></textarea>
+          </label>
+
+          <label class="form-field">
+            <span>Tag</span>
+            <input type="text" id="complaintTags" placeholder="Contoh: Pusing, Dialisis" />
+          </label>
+
+          <div class="dialog-actions">
+            <button class="secondary-button" type="button" data-close-complaint>Batal</button>
+            <button class="primary-button compact" type="submit">Simpan Keluhan</button>
+          </div>
+        </form>
+      </dialog>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=20260611-1"></script>
+  <script src="supabase-client.js?v=20260611-1"></script>
+  <script src="pwa-register.js?v=20260611-1"></script>
+  <script src="app.js?v=20260611-1"></script>
+</body>
+</html>
