@@ -37,11 +37,13 @@ function bindLogin() {
     const password = getValue('loginPassword');
 
     if (!email && !password) {
-      const {
-        data: { session },
-      } = await supabaseClient.auth.getSession();
+      const { data: sessionData, error: sessionError } = await runSupabaseRequest(() => supabaseClient.auth.getSession());
+      if (sessionError) {
+        showMessage('loginMessage', getAuthErrorMessage(sessionError.message), 'error');
+        return;
+      }
 
-      if (session) {
+      if (sessionData.session) {
         showMessage('loginMessage', 'Session masih aktif. Mengalihkan...', 'success');
         window.location.href = 'dashboard.html';
         return;
@@ -56,10 +58,10 @@ function bindLogin() {
     setFormBusy('loginForm', true);
     showMessage('loginMessage', 'Memeriksa akun...', 'success');
 
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await runSupabaseRequest(() => supabaseClient.auth.signInWithPassword({
       email,
       password,
-    });
+    }));
 
     if (error) {
       setFormBusy('loginForm', false);
@@ -67,7 +69,14 @@ function bindLogin() {
       return;
     }
 
-    await ensureProfile(data.user);
+    try {
+      await ensureProfile(data.user);
+    } catch (error) {
+      setFormBusy('loginForm', false);
+      showMessage('loginMessage', getAuthErrorMessage(error.message), 'error');
+      return;
+    }
+
     showMessage('loginMessage', 'Berhasil masuk. Mengalihkan...', 'success');
     window.location.href = 'dashboard.html';
   });
@@ -107,7 +116,7 @@ function bindRegister() {
     showMessage('registerMessage', 'Membuat akun...', 'success');
 
     const patientCode = makePatientId();
-    const { data, error } = await supabaseClient.auth.signUp({
+    const { data, error } = await runSupabaseRequest(() => supabaseClient.auth.signUp({
       email,
       password,
       options: {
@@ -117,7 +126,7 @@ function bindRegister() {
           patient_code: patientCode,
         },
       },
-    });
+    }));
 
     if (error) {
       setFormBusy('registerForm', false);
@@ -126,13 +135,19 @@ function bindRegister() {
     }
 
     if (data.user && data.session) {
-      await upsertProfile({
-        id: data.user.id,
-        full_name: name,
-        email,
-        gender,
-        patient_code: patientCode,
-      });
+      try {
+        await upsertProfile({
+          id: data.user.id,
+          full_name: name,
+          email,
+          gender,
+          patient_code: patientCode,
+        });
+      } catch (error) {
+        setFormBusy('registerForm', false);
+        showMessage('registerMessage', getAuthErrorMessage(error.message), 'error');
+        return;
+      }
     }
 
     if (!data.session) {
@@ -183,7 +198,7 @@ function bindAuthLinks() {
       return;
     }
 
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    const { error } = await runSupabaseRequest(() => supabaseClient.auth.resetPasswordForEmail(email));
     showMessage(
       'loginMessage',
       error ? getAuthErrorMessage(error.message) : 'Link reset password dikirim jika email terdaftar.',
@@ -196,11 +211,10 @@ async function initContinueSession() {
   const button = document.getElementById('continueSession');
   if (!button) return;
 
-  const {
-    data: { session },
-  } = await supabaseClient.auth.getSession();
+  const { data, error } = await runSupabaseRequest(() => supabaseClient.auth.getSession());
+  if (error) return;
 
-  button.hidden = !session;
+  button.hidden = !data.session;
   button.addEventListener('click', () => {
     window.location.href = 'dashboard.html';
   });
@@ -276,11 +290,36 @@ function showMessage(id, message, type) {
 function getAuthErrorMessage(message) {
   const text = String(message || '').toLowerCase();
 
+  if (text.includes('failed to fetch') || text.includes('networkerror') || text.includes('load failed')) {
+    return 'Tidak bisa terhubung ke Supabase. Cek URL dan anon key project baru di supabase-config.js, pastikan internet aktif, lalu refresh halaman.';
+  }
+
+  if (text.includes('invalid api key') || text.includes('jwt')) {
+    return 'Anon key Supabase belum sesuai. Copy ulang anon public key dari project Supabase baru.';
+  }
+
+  if (text.includes('relation') && text.includes('does not exist')) {
+    return 'Tabel database belum ada. Jalankan file SQL migration di Supabase SQL Editor terlebih dahulu.';
+  }
+
   if (text.includes('invalid login credentials')) return 'Email atau password belum sesuai.';
   if (text.includes('already registered') || text.includes('already been registered')) return 'Email sudah terdaftar.';
   if (text.includes('email not confirmed')) return 'Email belum dikonfirmasi. Cek inbox email Anda.';
 
   return message || 'Terjadi kesalahan autentikasi.';
+}
+
+async function runSupabaseRequest(request) {
+  try {
+    return await request();
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: error?.message || 'Tidak bisa terhubung ke Supabase.',
+      },
+    };
+  }
 }
 
 function makePatientId() {

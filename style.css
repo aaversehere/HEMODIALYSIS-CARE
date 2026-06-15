@@ -1439,6 +1439,21 @@ svg {
   background: #000000;
 }
 
+.video-dialog-frame {
+  display: block;
+  width: 100%;
+  max-height: calc(90vh - 96px);
+  max-height: calc(90dvh - 96px);
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  border: 0;
+}
+
+.video-dialog-player[hidden],
+.video-dialog-frame[hidden] {
+  display: none;
+}
+
 .article-dialog {
   position: fixed;
   inset: 0;

@@ -25,7 +25,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
   <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=20260611-1" />
+  <link rel="stylesheet" href="style.css?v=20260615-1" />
 </head>
 <body>
   <main class="app-shell" aria-label="Aplikasi Hemodialysis Care">
@@ -276,10 +276,10 @@
             </div>
 
             <div class="video-list" id="videoList">
-            <article class="video-card" data-category="Diet">
+            <article class="video-card" data-category="Diet" data-video-url="https://qanqhzpkhvyyifzikpre.supabase.co/storage/v1/object/public/Video%20Edukasi/Video%20Diet%20pada%20Penderita%20Gagal%20Ginjal.mp4">
               <div class="video-frame" style="--video-poster: url('assets/images/healthy_food.png')">
-                <video preload="metadata" poster="assets/images/healthy_food.png">
-                  <source src="https://vntrcglwdzokwcevsteb.supabase.co/storage/v1/object/public/education-videos/Tips%20Diet%20pada%20Penderita%20Gagal%20Ginjal%20-%20dr.%20Kristin%20Mekararti,%20Sp.GK%20-%20RS%20Hermina%20Grandwisata.mp4" type="video/mp4" />
+                <video preload="metadata" poster="assets/images/healthy_food.png" muted>
+                  <source src="" type="video/mp4" />
                   Browser Anda tidak mendukung pemutar video.
                 </video>
                 <button class="play-button" type="button">PLAY</button>
@@ -298,10 +298,10 @@
               </div>
             </article>
 
-            <article class="video-card" data-category="Olahraga">
+            <article class="video-card" data-category="Olahraga" data-video-url="https://qanqhzpkhvyyifzikpre.supabase.co/storage/v1/object/public/Video%20Edukasi/Video%20Olahraga%20Ringan.mp4">
               <div class="video-frame" style="--video-poster: url('assets/images/exercise_care.png')">
-                <video preload="metadata" poster="assets/images/exercise_care.png">
-                  <source src="https://vntrcglwdzokwcevsteb.supabase.co/storage/v1/object/public/education-videos/Do%20this%2010%20Min%20Morning%20Workout%20Routine%20Everyday%20-%20No%20Jumping,%20No%20Repeat.mp4" type="video/mp4" />
+                <video preload="metadata" poster="assets/images/exercise_care.png" muted>
+                  <source src="" type="video/mp4" />
                   Browser Anda tidak mendukung pemutar video.
                 </video>
                 <button class="play-button" type="button">PLAY</button>
@@ -492,6 +492,7 @@
             <button class="dialog-close" type="button" id="closeVideoDialog" aria-label="Tutup video">&times;</button>
           </header>
           <video class="video-dialog-player" id="videoDialogPlayer" controls playsinline></video>
+          <iframe class="video-dialog-frame" id="videoDialogFrame" title="Video Edukasi" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen hidden></iframe>
         </div>
       </dialog>
 
@@ -572,9 +573,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260611-1"></script>
-  <script src="supabase-client.js?v=20260611-1"></script>
-  <script src="pwa-register.js?v=20260611-1"></script>
-  <script src="app.js?v=20260611-1"></script>
+  <script src="supabase-config.js?v=20260615-1"></script>
+  <script src="supabase-client.js?v=20260615-1"></script>
+  <script src="pwa-register.js?v=20260615-1"></script>
+  <script src="app.js?v=20260615-1"></script>
 </body>
 </html>

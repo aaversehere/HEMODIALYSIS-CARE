@@ -1118,10 +1118,11 @@ function initVideoCards() {
     if (playButton) {
       const video = card.querySelector('video');
       const source = video?.querySelector('source');
+      const videoUrl = card.dataset.videoUrl || source?.getAttribute('src') || '';
 
-      if (source?.getAttribute('src')) {
+      if (videoUrl) {
         openVideoDialog({
-          src: source.getAttribute('src'),
+          src: videoUrl,
           poster: video.getAttribute('poster') || '',
           title: card.querySelector('h3')?.textContent || 'Video Edukasi',
         });
@@ -1158,14 +1159,34 @@ function initVideoCards() {
 function openVideoDialog({ src, poster, title }) {
   const dialog = document.getElementById('videoDialog');
   const player = document.getElementById('videoDialogPlayer');
+  const frame = document.getElementById('videoDialogFrame');
   const heading = document.getElementById('videoDialogTitle');
 
-  if (!dialog || !player) return;
+  if (!dialog || !player || !frame) return;
 
   if (heading) heading.textContent = title;
-  player.src = src;
-  player.poster = poster;
-  player.load();
+
+  const embedUrl = getEmbeddableVideoUrl(src);
+  const useFrame = isFrameVideoUrl(embedUrl);
+
+  if (useFrame && window.location.protocol === 'file:') {
+    window.open(src, '_blank', 'noopener');
+    return;
+  }
+
+  player.hidden = useFrame;
+  frame.hidden = !useFrame;
+
+  if (useFrame) {
+    player.pause();
+    player.removeAttribute('src');
+    frame.src = embedUrl;
+  } else {
+    frame.removeAttribute('src');
+    player.src = embedUrl;
+    player.poster = poster;
+    player.load();
+  }
 
   if (typeof dialog.showModal === 'function') {
     dialog.showModal();
@@ -1173,7 +1194,7 @@ function openVideoDialog({ src, poster, title }) {
     dialog.setAttribute('open', '');
   }
 
-  player.play().catch(() => {});
+  if (!useFrame) player.play().catch(() => {});
 }
 
 function closeVideoDialog() {
@@ -1190,11 +1211,44 @@ function closeVideoDialog() {
 
 function stopVideoDialog() {
   const player = document.getElementById('videoDialogPlayer');
+  const frame = document.getElementById('videoDialogFrame');
   if (!player) return;
 
   player.pause();
   player.removeAttribute('src');
   player.load();
+  frame?.removeAttribute('src');
+}
+
+function getEmbeddableVideoUrl(src) {
+  if (!src) return '';
+
+  try {
+    const url = new URL(src);
+
+    if (url.hostname.includes('youtu.be')) {
+      const videoId = url.pathname.replace('/', '');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    if (url.hostname.includes('youtube.com')) {
+      const videoId = url.searchParams.get('v');
+      if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    return url.href;
+  } catch {
+    return src;
+  }
+}
+
+function isFrameVideoUrl(src) {
+  try {
+    const url = new URL(src);
+    return url.hostname.includes('youtube.com') || url.hostname.includes('youtu.be') || url.hostname.includes('vimeo.com');
+  } catch {
+    return false;
+  }
 }
 
 function addNote() {
